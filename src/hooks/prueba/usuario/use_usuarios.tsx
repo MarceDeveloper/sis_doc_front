@@ -33,7 +33,7 @@ export const use_usuarios = () => {
     try {
       setLoading(true);
       const response = await axios_.get('/api/usuarios'); // Reemplaza '/api/usuarios' con la ruta correcta de tu API
-      setUsuarios(response.data);
+      setUsuarios(response.data?.data);
       setLoading(false);
     } catch (error) {
       setError('Error al obtener los usuarios');

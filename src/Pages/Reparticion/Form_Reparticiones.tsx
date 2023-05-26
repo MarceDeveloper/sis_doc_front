@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TextField, Button, Grid, Typography } from '@mui/material';
-import { Form_Reparticion } from '../../hooks/prueba/usuario/use_reparticiones_prisma';
+import { Form_Reparticion } from '../../hooks/hooks_api/reparticion/use_reparticiones_prisma';
 
 interface UserFormProps {
   onSubmit: (data: Form_Reparticion) => void;

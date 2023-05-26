@@ -1,47 +1,53 @@
-import React from 'react'
-import * as DTO from './DTO_Documento'
+import React, { useEffect, useState } from 'react'
 import { axios_ } from '../../../axios/_axios'
 import { swal } from '../../../utils/alert_swal/swal'
+import { DTO_documento } from '../../../Model/DTO/DTO_Documento';
 
-export const use_documento = () => {
+export const use_documentos = () => {
+  const [documentos, setDocmentos] = useState<DTO_documento[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchDocumentos();
+  }, []);
+
+  const fetchDocumentos = async () => {
+    try {
+      setLoading(true);
+      const response = await axios_.get('/api/documentos'); // Reemplaza '/api/reparticiones' con la ruta correcta de tu API
+      setDocmentos(response?.data?.data);
+      setLoading(false);
+    } catch (error) {
+      setError('Error al obtener los documentos');
+      setLoading(false);
+    }
+  };
 
   const getAll_documentos = async ()=>{
     const res = await axios_.get("/api/documentos")
-    return res.data as DTO.DTO_Documento[]
+    return res.data as []
   }
-  const crear_documento = async (newDocumento:DTO.DTO_create_Docuemento)=>{
-    
-    const config = {
-      headers: {
-        // 'Content-Type': 'application/json'
-        'Content-Type': 'multipart/form-data'
-
-      }
-    };
+  const crear_documento = async (data:any)=>{
     const formData = new FormData();
-    formData.append('file_data', newDocumento.file_data);
-    let temp = newDocumento as any
-    delete temp.file_data
-    console.log("antes ",newDocumento)
-    formData.append('data', JSON.stringify({...temp}));
 
-    console.log(newDocumento)
-    const res  = await axios_.post("/api/documentos",formData,{
+    formData.append("file_word", data.file_word[0]);
+    formData.append("file_pdf", data.file_pdf[0]);
+
+    let temp = data as any;
+    delete temp.file_word;
+    delete temp.file_pdf;
+    formData.append("data", JSON.stringify({ ...temp }));
+
+    return  await axios_.post("/api/documentos", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    // const res  = await axios_.post("/documento",formData,{
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // })
-    console.log({res:res})
-    swal.fire({title:"OK" ,text:"documento creado con exito",icon:"success",timer:2000})
-    return res
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    
   }
   
-  const update_documento = async (id_documento:number,newDocumento:DTO.DTO_create_Docuemento)=>{
+  const update_documento = async (id_documento:number,newDocumento :any)=>{
     
     const config = {
       headers: {
@@ -80,6 +86,8 @@ export const use_documento = () => {
     return res
   }
   return {
+    documentos,
+    loading,
     getAll_documentos,
     crear_documento,
     update_documento,

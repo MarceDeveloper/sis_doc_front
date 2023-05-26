@@ -1,7 +1,7 @@
 
 
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Select,
@@ -11,90 +11,80 @@ import {
   Checkbox,
   Grid,
   Typography,
+  Box,
+  Modal,
+  Fab,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { Colores } from '../../config/config_style';
-
-interface Documento {
-  id_documento: number;
-  nombre_documento: string;
-  descripcion: string;
-  estado: string;
-  estatuto: string;
-  codigo_manual: string;
-  reglamento: string;
-  manual_procedimiento: string;
-  guia: string;
-  instructivo: string;
-  formato: string;
-  registro: string;
-  elaborado_por: string;
-  revisado_por: string;
-  aprobado_por: string;
-  resolucion: string;
-  fecha: Date;
-  observaciones: string;
-  fecha_creacion: Date;
-  vigencia: string;
-  codigo: string;
-  version_documento: string;
-  formato_fisico: boolean;
-  formato_digital: boolean;
-  numero_documento: string;
-  url_file: string;
-  id_estado_documento: number;
-  id_reparticion: number;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
-}
+import { Form_Documento } from './Form_Dodumento';
+import { Navbar } from '../../components/Navbar/Navbar';
+import { use_documentos } from '../../hooks/hooks_api/documento/use_documento';
+import { Table_Documento } from './Table_Documento';
+import {AiOutlinePlus} from 'react-icons/ai'
+import Swal from 'sweetalert2';
+import { DTO_documento } from '../../Model/DTO/DTO_Documento';
 
 
 export const PruebaDocuemento = () => {
-  const { handleSubmit, register ,control ,formState:{errors} } = useForm<Documento>({
-    defaultValues: {},
-  });
+  const [OpenModal, setOpenModal] = useState(false)
+  const [doc_selec_for_update, setdoc_selec_for_update] = useState<DTO_documento | null>(null)
+  const {documentos,crear_documento,update_documento,getAll_documentos,delete_documento,loading} = use_documentos()
+  console.log({documentos})
 
-  const handleFormSubmit = handleSubmit((data) => {
-    // Procesar los datos del formulario aquí
-    console.log(data);
-  });
+  const handleClose = ()=>{
+    setOpenModal(false)
+  }
 
+  const onSubmit = async (data: any) => {
+    console.log(data)
+    try {
+        if (!doc_selec_for_update) {
+          // const res = await crear_documento(data)
+          alert("crare")
+          Swal.fire({title:"OK" ,text:"documento creado con exito",icon:"success",timer:2000})
+        }else{
+          alert("modificare")
+          const res = await update_documento(data.id_documento,data)
+          Swal.fire({title:"OK" ,text:"documento actualizado con exito",icon:"success",timer:2000})
+        }
+        setOpenModal(false)
+    } catch (error) {
+        console.log(error)
+        Swal.fire({title:"Error" ,text:"no se pudo crear el document",icon:"error",timer:2000})
+        setOpenModal(false)
+
+    }
+  };
+  
 
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          {/* <TextField
-            label="Nombre del documento"
-            defaultValue={1} // Agrega un valor predeterminado vacío
-            // name="nombre_documento"
-            inputRef={register("nombre_documento",{ required: true }) as any}
-            fullWidth
-          /> */}
-            <FormControl >
-              <Controller control={control}
-                name="estatuto" defaultValue=""
-                rules={{ required: "el estatuto es obligatorio" }}
-                render={(ren) => (
-                  <TextField 
-                    placeholder="estatuto" value={ren.field.value}   
-                    onChange={(val) => ren.field.onChange(val)}
-                  />
-                )}
-                
-                />
-                <Typography  color={Colores.error}>{errors.estatuto?.message}</Typography>
-                {/* <label color={"orange"}>{errors.estatuto?.message}</label> */}
-            </FormControl>
-        </Grid>
-        
-      </Grid>
+    <Box>
+      <Navbar/>
+      <Fab color='primary' aria-label="Add" onClick={()=>{}} style={{ position: 'fixed', bottom: 16, right: 16 }}>
+        <AiOutlinePlus  size={50} onClick={()=>{
+          setdoc_selec_for_update(null)
+          setOpenModal(true)
+        }}/>
+      </Fab>
 
-      <Button type="submit" variant="contained" color="primary">
-        Enviar
-      </Button>
-    </form>
+      <Typography>Aqui ira el filter</Typography>
+      <Modal open={OpenModal} onClose={handleClose}>
+        <div className="modal-container" style={{width:"90%", maxHeight:"90vh", overflow:"auto"}}>
+          <Form_Documento onSubmit={onSubmit} documento={doc_selec_for_update}/>
+
+          {/* <Form_Usuarios  onSubmit={selectedUser == undefined ? Crear : Edit} defaultValues={selectedUser} /> */}
+        </div>
+      </Modal>
+      <Table_Documento 
+        setdoc_selec_for_update={(doc:DTO_documento)=>{
+          delete doc.reparticion
+          setdoc_selec_for_update(doc)
+          setOpenModal(true)
+        }} 
+        delete_documento={delete_documento} documentos={documentos}
+      />
+    </Box>
   );
 };

@@ -6,7 +6,7 @@ export const GlobalStyleModal = createGlobalStyle`
 
   .modal-container {
     position: fixed;
-    top: 30%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;

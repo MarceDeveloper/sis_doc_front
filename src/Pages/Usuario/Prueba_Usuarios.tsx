@@ -9,7 +9,6 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import {TfiWrite} from 'react-icons/tfi'
 import {GrAddCircle} from 'react-icons/gr'
 import { Navbar } from '../../components/Navbar/Navbar';
-import { Box } from 'native-base';
 import { Colores } from '../../config/config_style';
 import { ScreenLoading } from '../../components/ScreenLoading/ScreenLoading';
 import { validate_map } from '../../utils/validate_map';
@@ -20,6 +19,7 @@ export const Prueba_Usuarios: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Form_Usuario | undefined>(undefined);
 
+  console.log({usuarios})
   
   const handleClose = ()=>{
     setOpen(false)

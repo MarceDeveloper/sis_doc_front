@@ -18,7 +18,7 @@ export interface Form_Reparticion {
     id_unidad: number;
 }
 
-export const use_reparticiones_prisma = () => {
+export const use_reparticiones = () => {
   const [reparticiones, setReparticiones] = useState<Reparticion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

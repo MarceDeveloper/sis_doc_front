@@ -11,8 +11,11 @@ import { get_Store_Sesion } from './localStorage/Store_Sesion';
 import { useStore_sesion } from './store/store_sesion';
 import { PruebaDocuemento, } from './Pages/PruebaDocumento/PruebaDocuemento';
 import { GlobalStyleModal } from './ComponentsStyled/GlobalStyleModal';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Home } from './Pages/Home/Home';
+import { Colores } from './config/config_style';
 
-const theme = extendTheme({
+const themeNativeBas = extendTheme({
   colors: {
     primary: {
       50: '#f3faff',
@@ -26,6 +29,18 @@ const theme = extendTheme({
       800: '#0033b4',
       900: '#002583',
     },
+  },
+});
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: Colores.color1, // Cambia el color principal
+    },
+    secondary: {
+      main: Colores.color2, // Cambia el color secundario
+    },
+
   },
 });
 
@@ -44,10 +59,11 @@ function App() {
       <GlobalStyle/>
       <GlobalStyle_Form/>
       <GlobalStyleModal/>
-      
-      <NativeBaseProvider theme={theme}>
-        <App_Router/>
-      </NativeBaseProvider>
+      {/* <NativeBaseProvider theme={themeNativeBas}> */}
+        <ThemeProvider theme={theme}>
+          <App_Router/>
+        </ThemeProvider>
+      {/* </NativeBaseProvider> */}
         {/* <PruebaDocuemento/> */}
       {/* <Formulario/> */}
       {/* <Login /> */}
