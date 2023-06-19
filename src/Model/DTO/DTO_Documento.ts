@@ -1,7 +1,10 @@
+import { DTO_Reparticion } from "./DTO_Reparticion";
+
 export interface DTO_documento {
     id_documento: number;
     nombre_documento: string;
     version_documento: number;
+    estado_documento: string
     fecha_vigencia: Date;
     codigo_del_documento: string;
     estatuto: boolean;
@@ -30,11 +33,5 @@ export interface DTO_documento {
     id_user_create: number;
     id_user_update?: number;
     id_user_delete?: number;
-    reparticion?:{
-        id_reparticion:number,
-        nombre:string
-        estado:string
-        codigo:number
-        id_unidad:number
-    }
+    reparticion?:DTO_Reparticion
   }

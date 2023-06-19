@@ -1,4 +1,3 @@
-import { Box, Center, Container , HStack, Text} from 'native-base'
 import * as s from './MyTalbs.Style'
 
 export const MyTabs = () => {

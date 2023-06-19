@@ -9,6 +9,8 @@ export interface Usuario {
   nombre: string;
   contrasena:string
   estado: string;
+  id_reparticion:number
+
 }
 
 export interface Form_Usuario {
@@ -16,6 +18,7 @@ export interface Form_Usuario {
   usuario: string;
   nombre: string;
   contrasena:string
+  id_reparticion:number
 }
 
 export const use_usuarios = () => {

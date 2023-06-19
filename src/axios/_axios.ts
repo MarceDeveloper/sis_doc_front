@@ -102,7 +102,7 @@ axios_.interceptors.response.use((res)=>{
     // swal.fire({icon:"error",title:"error",titleText:"ha ocurrido un error"})
     switch (err.response?.status) {
         case 401:
-            alert("accion no completada su seion a expirado sera redirigido a el inico de sesion")
+            // alert("accion no completada su seion a expirado sera redirigido a el inico de sesion")
             delete_Store_Sesion()
             window.location.replace("/")
             return err

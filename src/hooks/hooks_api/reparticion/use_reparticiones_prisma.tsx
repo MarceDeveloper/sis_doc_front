@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { axios_ } from '../../../axios/_axios';
+import { DTO_Reparticion } from '../../../Model/DTO/DTO_Reparticion';
 
 export interface Reparticion {
     id_reparticion :number
@@ -17,9 +18,16 @@ export interface Form_Reparticion {
     codigo: number;
     id_unidad: number;
 }
+export interface Secre_with_reparticiones {
+  secretaria:DTO_Reparticion,
+  reparticiones:DTO_Reparticion[]
+}
 
 export const use_reparticiones = () => {
-  const [reparticiones, setReparticiones] = useState<Reparticion[]>([]);
+  const [reparticiones, setReparticiones] = useState<DTO_Reparticion[]>([]);
+  const [secretarias, setSecretarias] = useState<DTO_Reparticion[]>()
+  const [secretarias_reparticiones, setsecretarias_reparticiones] = useState<Secre_with_reparticiones[]>()
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -33,13 +41,38 @@ export const use_reparticiones = () => {
     try {
       setLoading(true);
       const response = await axios_.get('/api/reparticiones'); // Reemplaza '/api/reparticiones' con la ruta correcta de tu API
-      setReparticiones(response.data);
+      const lst_tem: DTO_Reparticion[]=response.data
+      const lst_sin_secretarias = lst_tem.filter((rep)=>rep.id_unidad_padre != 158)
+      setReparticiones(lst_sin_secretarias);
+      lse_secre_with_reparticiones(response.data)
+      CargarSecretarias(response.data)
       setLoading(false);
     } catch (error) {
       setError('Error al obtener los reparticiones');
       setLoading(false);
     }
   };
+  const CargarSecretarias = (reparticions:DTO_Reparticion[])=>{
+    // Obtener una nueva lista sin elementos repetidos
+    const nuevaLista = reparticions.filter((rep)=>rep.id_unidad_padre == 158);
+    // const nuevaLista = reparticions.filter((elem, index, self) => {
+    //   return index === self.findIndex((t) => (
+    //     t.actividad=== elem.actividad
+    //   ));
+    // });
+    setSecretarias(nuevaLista)
+
+  }
+  const lse_secre_with_reparticiones = (lst:DTO_Reparticion[]) =>{
+    const secretarias = lst.filter((rep)=>rep.id_unidad_padre == 158);
+    const secretarias_repartiiones = secretarias.map((sec)=>{
+      return {
+        secretaria:sec,
+        reparticiones:lst.filter((rep)=>rep.id_unidad_padre == sec.id_unidad)
+      }
+    }) 
+    setsecretarias_reparticiones(secretarias_repartiiones)
+  }
 
   const createReparticion = async (reparticion: Form_Reparticion) => {
     try {
@@ -85,6 +118,8 @@ export const use_reparticiones = () => {
 
   return {
     reparticiones,
+    secretarias,
+    secretarias_reparticiones,
     loading,
     error,
     createReparticion,

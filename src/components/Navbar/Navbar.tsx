@@ -77,7 +77,8 @@ import React, { useState } from 'react';
 import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemText, ListItemIcon, ListItemButton, ListSubheader, Box } from '@mui/material';
 // import { Menu as MenuIcon, Home as HomeIcon, AccountCircle as AccountCircleIcon, Mail as MailIcon } from '@mui/icons-material';
 import {FaUserCircle,FaBars} from 'react-icons/fa' 
-import { BiLogOut } from 'react-icons/bi';
+import { BiLogOut ,BiUserPlus} from 'react-icons/bi';
+
 
 import { Colores } from '../../config/config_style';
 import { useStore_sesion } from '../../store/store_sesion';
@@ -88,7 +89,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const Navbar: React.FC = () => {
   const navi = useNavigate()
-  const {usuario,logout} = useStore_sesion()
+  const {usuario,logout,isAuthenticated} = useStore_sesion()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = (open: boolean) => () => {
@@ -127,10 +128,15 @@ export const Navbar: React.FC = () => {
       label:"Reparticiones",
       path:"/reparticiones"
     },
+    {
+      icono:<FaBars color={colorIcon}/>,
+      label:"Reporte",
+      path:"/Reporte_By_Type_Doducment"
+    },
   ]
   return (
     <>
-      <AppBar color='primary' position="sticky">
+      <AppBar color='primary' position="sticky" sx={{zIndex:200}}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
             <FaBars />
@@ -138,70 +144,83 @@ export const Navbar: React.FC = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
             Sistema de Seguimiento de Documentos OyM
           </Typography>
-          <IconButton color="inherit" aria-label="logout" onClick={()=>{logout()}}>
+          {
+            isAuthenticated ?
+            <IconButton color="inherit" aria-label="logout" onClick={()=>{logout()}}>
+              <BiLogOut  />
+            </IconButton>
+            :
+            <IconButton color="inherit" aria-label="logout" onClick={()=>{navi("/Login")}}>
+              <BiUserPlus  />
+            </IconButton> 
+          }
+          {/* <IconButton color="inherit" aria-label="logout" onClick={()=>{logout()}}>
             <BiLogOut  />
-          </IconButton>
+          </IconButton> */}
         </Toolbar>
       </AppBar>
-      <Drawer  draggable={true} anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}
-        sx={{
-          width: 300, // Establece el ancho del Drawer
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            backgroundColor:Colores.color2,
-            color:"white",
-            width: ["90vw",250], // Establece el ancho del contenido interno del Drawer
-            boxSizing: 'border-box',
-          },
-        }}
-      >
-        <List
-           subheader={
-            <ListSubheader component="div" sx={{ display: 'flex',flexDirection:"column", height: 100, justifyContent: 'center', alignItems: 'center' }}>
-              <ListItemIcon >
-                  <FaUserCircle size={60} style={{margin:"auto"}} />
-              </ListItemIcon>
-              <Typography variant="subtitle1">
-                {usuario?.nombre}
-              </Typography>
-            </ListSubheader>
-          }
+      {
+        isAuthenticated &&
+        <Drawer  draggable={true} anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}
+          sx={{
+            width: 300, // Establece el ancho del Drawer
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              backgroundColor:Colores.color2,
+              color:"white",
+              width: ["90vw",250], // Establece el ancho del contenido interno del Drawer
+              boxSizing: 'border-box',
+            },
+          }}
         >
-          {lst_Rutas.map((ruta, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton onClick={()=>{
-                navi(ruta.path)
-              }}>
-                <ListItemIcon>
-                  {ruta.icono}
+          <List
+            subheader={
+              <ListSubheader component="div" sx={{ display: 'flex',flexDirection:"column", height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                <ListItemIcon >
+                    <FaUserCircle size={60} style={{margin:"auto"}} />
                 </ListItemIcon>
-                <Typography fontSize={18}>{ruta.label}</Typography>
-                {/* <ListItemText  primary={text} /> */}
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-          {/* <List>
-            <ListItem button onClick={handleMenuClick}>
-              <ListItemIcon>
-                <FaUserCircle />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItem>
-            <ListItem button onClick={handleMenuClick}>
-              <ListItemIcon>
-                <FaUserCircle />
-              </ListItemIcon>
-              <ListItemText primary="Profile" />
-            </ListItem>
-            <ListItem button onClick={handleMenuClick}>
-              <ListItemIcon>
-                <FaUserCircle />
-              </ListItemIcon>
-              <ListItemText primary="Contact" />
-            </ListItem>
-          </List> */}
-      </Drawer>
+                <Typography variant="subtitle1">
+                  {usuario?.nombre}
+                </Typography>
+              </ListSubheader>
+            }
+          >
+            {lst_Rutas.map((ruta, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton onClick={()=>{
+                  navi(ruta.path)
+                }}>
+                  <ListItemIcon>
+                    {ruta.icono}
+                  </ListItemIcon>
+                  <Typography fontSize={18}>{ruta.label}</Typography>
+                  {/* <ListItemText  primary={text} /> */}
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+            {/* <List>
+              <ListItem button onClick={handleMenuClick}>
+                <ListItemIcon>
+                  <FaUserCircle />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem button onClick={handleMenuClick}>
+                <ListItemIcon>
+                  <FaUserCircle />
+                </ListItemIcon>
+                <ListItemText primary="Profile" />
+              </ListItem>
+              <ListItem button onClick={handleMenuClick}>
+                <ListItemIcon>
+                  <FaUserCircle />
+                </ListItemIcon>
+                <ListItemText primary="Contact" />
+              </ListItem>
+            </List> */}
+        </Drawer>
+      }
     </>
   );
 };

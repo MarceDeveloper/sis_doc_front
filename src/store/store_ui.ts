@@ -1,7 +1,6 @@
 import React from 'react';
 import { create, createStore, SetState } from 'zustand';
 import {Usuario} from '../Model/Usuario'
-import { Informe } from '../Model/Informe';
 
 interface Store_Ui {
   drawer_visible: boolean ;

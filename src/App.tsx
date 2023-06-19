@@ -6,7 +6,6 @@ import { Login } from './Pages/Login/Login';
 import { Formulario } from './components/FormBasic/FormBasic';
 import { GlobalStyle_Form } from './ComponentsStyled/GlobalStyle_Form';
 import { App_Router } from './router/App_Router';
-import { NativeBaseProvider, Box, extendTheme } from "native-base";
 import { get_Store_Sesion } from './localStorage/Store_Sesion';
 import { useStore_sesion } from './store/store_sesion';
 import { PruebaDocuemento, } from './Pages/PruebaDocumento/PruebaDocuemento';
@@ -15,22 +14,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Home } from './Pages/Home/Home';
 import { Colores } from './config/config_style';
 
-const themeNativeBas = extendTheme({
-  colors: {
-    primary: {
-      50: '#f3faff',
-      100: '#cfe5ff',
-      200: '#a9ccff',
-      300: '#84b3ff',
-      400: '#5e9aff',
-      500: '#3980ff', // Cambia este valor al color primario deseado
-      600: '#1e5fff',
-      700: '#0041e6',
-      800: '#0033b4',
-      900: '#002583',
-    },
-  },
-});
+
 
 const theme = createTheme({
   palette: {

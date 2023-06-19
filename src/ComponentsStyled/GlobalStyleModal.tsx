@@ -16,6 +16,7 @@ export const GlobalStyleModal = createGlobalStyle`
     /* width: 400px; */
     max-width: 90%;
     outline: none;
+    z-index: 1000 !important;
   }
 
 `;

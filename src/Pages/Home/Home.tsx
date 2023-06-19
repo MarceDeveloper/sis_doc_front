@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { Navbar } from "../../components/Navbar/Navbar";
+import { useStore_sesion } from "../../store/store_sesion";
+import { PruebaDocuemento } from "../PruebaDocumento/PruebaDocuemento";
 
 
 interface I_Form{
@@ -11,6 +13,7 @@ interface I_Form{
 
 export const Home = () => {
   const navi = useNavigate();
+  const {isAuthenticated} = useStore_sesion()
   const {control,handleSubmit,formState: { errors }, register} = useForm<I_Form>();
   const onSubmit = (data: I_Form) => {
     console.log("submiting with ", data);
@@ -18,7 +21,12 @@ export const Home = () => {
 
   return (
     <>
-      <Navbar/>
+      {
+        isAuthenticated ? 
+        <PruebaDocuemento type_route="private"/>
+        :
+        <PruebaDocuemento type_route="public"/>
+      }
     </>
   );
 };

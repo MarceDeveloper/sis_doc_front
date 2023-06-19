@@ -144,12 +144,61 @@
 //     </div>
 //   );
 // };
+import React, { useState } from 'react';
+import {  Button, Modal, Fab } from '@mui/material';
+import { Form_Usuario, Usuario, use_usuarios } from '../../hooks/prueba/usuario/use_usuarios';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton } from '@mui/material';
+import {AiFillDelete} from 'react-icons/ai'
+import { AiOutlinePlus } from 'react-icons/ai';
 
-import React from 'react'
+import {TfiWrite} from 'react-icons/tfi'
+import {GrAddCircle} from 'react-icons/gr'
+import { Navbar } from '../../components/Navbar/Navbar';
+import { Colores } from '../../config/config_style';
+import { ScreenLoading } from '../../components/ScreenLoading/ScreenLoading';
+import { validate_map } from '../../utils/validate_map';
+import { use_reparticiones } from '../../hooks/hooks_api/reparticion/use_reparticiones_prisma';
 
-export const Prueba_Reparticiones = () => {
+
+export const Prueba_Reparticiones: React.FC = () => {
+  const {reparticiones,loading} = use_reparticiones()
+
+
+ 
+
+  
   return (
-    <div>Prueba_Reparticiones</div>
-  )
-}
+    <div>
+      <ScreenLoading is_visible={loading}/>
+      <Navbar/>
 
+      
+      <TableContainer sx={{maxWidth:["100%","90%"], mx:"auto" ,mt:2}}>
+      <Table className='customTable' size='small'>
+        <TableHead>
+          <TableRow className='customTableRowHead'>
+            <TableCell className='cell_head'>Secretaria</TableCell>
+            <TableCell className='cell_head'>Nivel</TableCell>
+            <TableCell className='cell_head'>Reparticion</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {validate_map(reparticiones).map((rep) => (
+            <TableRow key={rep?.id_reparticion}>
+              <TableCell className='customTableRowBody'>{rep?.actividad}</TableCell>
+              <TableCell className='customTableRowBody'>{rep?.nivel}</TableCell>
+              <TableCell className='customTableRowBody'>{rep?.nombre}</TableCell>
+             
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+      
+
+   
+
+     
+    </div>
+  );
+};

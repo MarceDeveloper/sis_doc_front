@@ -1,3 +1,4 @@
+import react , {useState,useEffect} from 'react'
 import { useForm,Controller } from "react-hook-form";
 import {
   Container,
@@ -28,35 +29,87 @@ import moment_time from 'moment-timezone'
 interface Iprops{
   onSubmit: (data: any) => Promise<void>
   documento:DTO_documento | null
+  accion_form:"crear" | "actualizar" | "nueva_version"
 }
 
-export const Form_Documento = ({onSubmit,documento}:Iprops) => {
+export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
+  const [secretaria_select, setSecretaria_select] = useState("")
   const {crear_documento} = use_documentos()
-  const { reparticiones } = use_reparticiones();
+  const { reparticiones,secretarias } = use_reparticiones();
 
-  const { register, handleSubmit, watch ,getValues,control} = useForm<any>({
+  console.log({documento_actu:documento})
+
+  const { register, handleSubmit, watch ,getValues,control,formState:{errors}} = useForm<any>({
     defaultValues:{
       ...documento
     }
   });
+  
+  useEffect(() => {
+    if (documento) {
+      const sec = reparticiones.find((r)=>r.id_reparticion == documento.id_reparticion)
+      console.log({sec:sec?.actividad})
+      if (sec) {
+        setSecretaria_select(sec?.actividad)
+      }
+    }
+  }, [reparticiones])
+  
+
 
   const fileWord = watch("file_word");
   const file_pdf = watch("file_pdf");
 
   
+  const Render_Accion_Form = ():string =>{
+    let accion=""
+    switch (accion_form) {
+      case "crear":
+        accion = "Crear"
+        break;
+      case "actualizar":
+        accion = "Actualizar"
+        break;
+      case "nueva_version":
+        accion = "Nueva Versión" 
+        break;
+      default:
+        break;
+    }
+    return accion
+  }
 
   return (
     <Container maxWidth="md">
+      <Typography variant="h4" textAlign={"center"} mb={2}>{Render_Accion_Form()}</Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
+              disabled={accion_form == "actualizar" ? true: false}
               {...register("nombre_documento")}
               size="small"
               label="Nombre del documento"
               fullWidth
               required
             />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth variant="outlined" size="small" required>
+              <InputLabel id="secretaria-label">Secretaria</InputLabel>
+              <Select
+                labelId="secretaria-label"
+                label="Secretaria"
+                onChange={(e)=>{setSecretaria_select(String(e.target.value))}}
+                value={secretaria_select}
+                  // renderValue={(selected :any) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
+              >
+                {
+                    secretarias?.map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.actividad}>{repart.actividad}</MenuItem>)
+                }
+                {/* Agrega más opciones según tus necesidades */}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth variant="outlined" size="small" required>
@@ -69,7 +122,7 @@ export const Form_Documento = ({onSubmit,documento}:Iprops) => {
                 //   renderValue={(selected) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
               >
                 {
-                    reparticiones?.map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.id_reparticion}>{repart.nombre}</MenuItem>)
+                    reparticiones?.filter((r)=> r.actividad == secretaria_select).map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.id_reparticion}>{repart.nombre}</MenuItem>)
                 }
                 {/* Agrega más opciones según tus necesidades */}
               </Select>
@@ -130,6 +183,7 @@ export const Form_Documento = ({onSubmit,documento}:Iprops) => {
           <Grid item xs={12} sm={6}>
             <TextField
               {...register("codigo_del_documento")}
+              disabled={accion_form == "nueva_version" || accion_form == "actualizar" ? true: false}
               size="small"
               label="Código del documento"
               fullWidth
@@ -137,9 +191,16 @@ export const Form_Documento = ({onSubmit,documento}:Iprops) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={<Checkbox checked={watch("permitido")} size="small" {...register("permitido")} />}
+              label="Permitido"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <label htmlFor="file_word">
               <input
                 {...register("file_word")}
+                // required={accion_form == "crear" || "nueva_version" ? true : false}
                 id="file_word"
                 name="file_word"
                 type="file"
@@ -155,6 +216,7 @@ export const Form_Documento = ({onSubmit,documento}:Iprops) => {
               </IconButton>
               {fileWord && <Typography>{fileWord[0]?.name}</Typography>}
               <Typography variant="caption">Adjuntar WORD</Typography>
+
             </label>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -256,6 +318,7 @@ export const Form_Documento = ({onSubmit,documento}:Iprops) => {
               size="small"
               label="Aprobado con"
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -305,10 +368,16 @@ export const Form_Documento = ({onSubmit,documento}:Iprops) => {
             <Button type="submit" variant="contained" color="primary">
               Guardar
             </Button>
+            {/* <Button type="button" onClick={()=>{console.log(errors)}} variant="contained" color="primary">
+              Ver errores
+            </Button>
+            <Button type="button" onClick={()=>{console.log(getValues())}} variant="contained" color="primary">
+              Ver form
+            </Button> */}
           </Grid>
         </Grid>
       </form>
-      <Button onClick={()=>{console.log(getValues())}}>ver data</Button>
+      {/* <Button onClick={()=>{console.log(getValues())}}>ver data</Button> */}
     </Container>
   );
 };
