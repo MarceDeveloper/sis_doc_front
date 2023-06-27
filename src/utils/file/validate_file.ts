@@ -11,10 +11,7 @@ export const Is_Word = (file: File) => {
             const one = file.type !== 'application/msword'
             const two = file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
             alert('Por favor, seleccione un archivo de Word válido.'+`${one}` +two);
-            console.log({
-                from:"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                to:file.type
-            })
+           
            
             return false
         }

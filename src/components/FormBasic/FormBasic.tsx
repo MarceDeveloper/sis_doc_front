@@ -28,13 +28,13 @@ export function Formulario() {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log({
-      nombre,
-      email,
-      telefono,
-      sexo,
-      intereses,
-    });
+    // console.log({
+    //   nombre,
+    //   email,
+    //   telefono,
+    //   sexo,
+    //   intereses,
+    // });
   };
 
   return (

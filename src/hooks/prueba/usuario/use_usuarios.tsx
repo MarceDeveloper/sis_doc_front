@@ -52,7 +52,6 @@ export const use_usuarios = () => {
       Swal.fire('Éxito', 'Usuario creado exitosamente', 'success');
     } catch (error) {
       setError('Error al crear el usuario');
-      console.log(error)
       Swal.fire('Error', 'Hubo un error al crear el usuario', 'error');
     }
   };

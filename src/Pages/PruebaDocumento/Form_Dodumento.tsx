@@ -37,7 +37,6 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
   const {crear_documento} = use_documentos()
   const { reparticiones,secretarias } = use_reparticiones();
 
-  console.log({documento_actu:documento})
 
   const { register, handleSubmit, watch ,getValues,control,formState:{errors}} = useForm<any>({
     defaultValues:{
@@ -48,7 +47,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
   useEffect(() => {
     if (documento) {
       const sec = reparticiones.find((r)=>r.id_reparticion == documento.id_reparticion)
-      console.log({sec:sec?.actividad})
+      // console.log({sec:sec?.actividad})
       if (sec) {
         setSecretaria_select(sec?.actividad)
       }
@@ -105,7 +104,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
                   // renderValue={(selected :any) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
               >
                 {
-                    secretarias?.map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.actividad}>{repart.actividad}</MenuItem>)
+                    secretarias?.map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.actividad}>{repart.nombre}</MenuItem>)
                 }
                 {/* Agrega más opciones según tus necesidades */}
               </Select>
@@ -128,20 +127,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
               </Select>
             </FormControl>
           </Grid>
-          {/* <Grid item xs={12} sm={6} display={"none"}>
-            <TextField
-              {...register("version_documento", { valueAsNumber: true })}
-              size="small"
-              type="text"
-              label="Versión del documento"
-              fullWidth
-              required
-              inputProps={{
-                pattern: "^\\d+(\\.\\d+)?$",
-                step: "0.1",
-              }}
-            />
-          </Grid> */}
+          
           <Grid item xs={12} sm={6}>
             <Controller control={control}
               defaultValue={""}
@@ -181,6 +167,27 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
             /> */}
           </Grid>
           <Grid item xs={12} sm={6}>
+            <FormControl fullWidth variant="outlined" size="small" required>
+              <InputLabel id="tipo_documento-label">Tipo Documento</InputLabel>
+              <Select
+                {...register("tipo_documento")}
+                labelId="id_reparticion-label"
+                label="Tipo Documento"
+                value={watch("tipo_documento")}
+                //   renderValue={(selected) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
+              >
+                <MenuItem  value={"estatuto"}>estatuto</MenuItem>
+                <MenuItem  value={"codigo"}>codigo</MenuItem>
+                <MenuItem  value={"reglamento"}>reglamento</MenuItem>
+                <MenuItem  value={"manual"}>manual</MenuItem>
+                <MenuItem  value={"guia"}>guia</MenuItem>
+                <MenuItem  value={"instructivo"}>instructivo</MenuItem>
+                <MenuItem  value={"formato"}>formato</MenuItem>
+                <MenuItem  value={"registro"}>registro</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <TextField
               {...register("codigo_del_documento")}
               disabled={accion_form == "nueva_version" || accion_form == "actualizar" ? true: false}
@@ -190,12 +197,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControlLabel
-              control={<Checkbox checked={watch("permitido")} size="small" {...register("permitido")} />}
-              label="Permitido"
-            />
-          </Grid>
+          
           <Grid item xs={12} sm={6}>
             <label htmlFor="file_word">
               <input
@@ -242,6 +244,20 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControlLabel
+              control={<Checkbox checked={watch("permitido")} size="small" {...register("permitido")} />}
+              label="Permitido"
+            />
+          </Grid>
+          { accion_form == "crear" &&
+            <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={<Checkbox checked={watch("inicia_en_0")} size="small" {...register("inicia_en_0")} />}
+                label="Iniciar en 0"
+              />
+            </Grid>
+          }
+          {/* <Grid item xs={12} sm={6}>
+            <FormControlLabel
               control={<Checkbox checked={watch("estatuto")} size="small" {...register("estatuto")} />}
               label="Estatuto"
             />
@@ -287,7 +303,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
               control={<Checkbox checked={watch("registro")} size="small" {...register("registro")} />}
               label="Registro"
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={6}>
             <TextField
               {...register("elaborado_por")}

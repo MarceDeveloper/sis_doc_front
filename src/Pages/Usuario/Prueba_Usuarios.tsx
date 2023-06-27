@@ -19,7 +19,6 @@ export const Prueba_Usuarios: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Form_Usuario | undefined>(undefined);
 
-  console.log({usuarios})
   
   const handleClose = ()=>{
     setOpen(false)
@@ -33,7 +32,6 @@ export const Prueba_Usuarios: React.FC = () => {
   };
 
   const handleModalEditUser = (usuario: Form_Usuario) => {
-    console.log("abri modal")
     setSelectedUser(usuario);
     setOpen(true);
   };
@@ -42,7 +40,6 @@ export const Prueba_Usuarios: React.FC = () => {
   };
 
   const Crear = (usuario:Form_Usuario)=>{
-    console.log("creare")
     createUser(usuario)
     setOpen(false)
   }
@@ -75,7 +72,7 @@ export const Prueba_Usuarios: React.FC = () => {
             <TableCell className='cell_head'>Usuario</TableCell>
             <TableCell className='cell_head'>Nombre</TableCell>
             <TableCell className='cell_head'>Estado</TableCell>
-            <TableCell className='cell_head'>Acciones</TableCell>
+            {/* <TableCell className='cell_head'>Acciones</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -86,8 +83,8 @@ export const Prueba_Usuarios: React.FC = () => {
               <TableCell className='customTableRowBody'>{usuario?.nombre}</TableCell>
               <TableCell className='customTableRowBody'>{usuario?.estado}</TableCell>
               <TableCell align='center' className='customTableRowBody'>
-                <Button size='small' sx={{mr:1}} onClick={() => {handleModalDelete(usuario.id_usuario)}} variant='outlined' color='error'><AiFillDelete/></Button>
-                <Button size='small' sx={{ml:1}} onClick={() => {handleModalEditUser(usuario)}} variant='outlined' color='info'><TfiWrite/></Button>
+                {/* <Button size='small' sx={{mr:1}} onClick={() => {handleModalDelete(usuario.id_usuario)}} variant='outlined' color='error'><AiFillDelete/></Button>
+                <Button size='small' sx={{ml:1}} onClick={() => {handleModalEditUser(usuario)}} variant='outlined' color='info'><TfiWrite/></Button> */}
 
                 {/* <IconButton color="primary" >
                   <Edit />

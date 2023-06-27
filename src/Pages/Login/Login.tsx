@@ -16,20 +16,19 @@ export const Login = () => {
   useEffect(() => {
     const data_sesion = get_Store_Sesion()
     if (data_sesion) {
-      console.log("en memoria",data_sesion)
+      // console.log("en memoria",data_sesion)
       login(data_sesion.token,data_sesion.usuario)
-      console.log("ingresare esta data")
+      // console.log("ingresare esta data")
       navi("/")
     }
   }, [])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("enviar")
+    // console.log("enviar")
     try {
-      const res = await axios_.post("/sesion/login",{usuario:nombre_usuario,contrasena:contrasena})
+      const res = await axios_.post("/api/sesion/login",{usuario:nombre_usuario,contrasena:contrasena})
       const token = res?.headers["auth-token"]
-      console.log(res)
 
       if (token && res.data?.usuario) {
         console.log("guardar esete usuario ",res.data.usuario)
@@ -41,7 +40,6 @@ export const Login = () => {
       
       Swal.fire('Error', error?.response?.data?.error || 'Hubo un error al iniciar sesion', 'error');
 
-      console.log()
     }
    
 

@@ -2,19 +2,21 @@ import { DTO_Reparticion } from "./DTO_Reparticion";
 
 export interface DTO_documento {
     id_documento: number;
+    permitido: boolean;
     nombre_documento: string;
     version_documento: number;
     estado_documento: string
     fecha_vigencia: Date;
     codigo_del_documento: string;
-    estatuto: boolean;
-    codigo: boolean;
-    reglamento: boolean;
-    manual: boolean;
-    guia: boolean;
-    instructivo: boolean;
-    formato: boolean;
-    registro: boolean;
+    tipo_documento : string
+    // estatuto: boolean;
+    // codigo: boolean;
+    // reglamento: boolean;
+    // manual: boolean;
+    // guia: boolean;
+    // instructivo: boolean;
+    // formato: boolean;
+    // registro: boolean;
     elaborado_por?: string | null;
     revisado_por?: string | null;
     aprobado_por?: string | null;

@@ -2,7 +2,7 @@ import { I_Sesion } from "../Model/I_Sesion"
 import { name_local_storage } from "../config/config_api"
 
 export const set_Store_Sesion = (sesion:I_Sesion)=>{
-    console.log("guardare", sesion)
+    // console.log("guardare", sesion)
     localStorage.setItem(name_local_storage,JSON.stringify(sesion) )
 }
 

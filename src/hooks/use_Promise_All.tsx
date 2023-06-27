@@ -13,7 +13,7 @@ export const use_Promise_All = () => {
                 call_ok()
             }
         } catch (error) {
-            console.log("error Promise All")
+            // console.log("error Promise All")
             console.log(error)
             seterror_fetch("error fetch data")
             setis_fetching(false)

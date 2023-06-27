@@ -36,9 +36,8 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
         let matchesSearch = true
         let matchesEstado_Documento = true
         let matchesReparticiones = true
-        console.log("filtrarrr")
-        console.log("secre ", secretaria_select)
 
+       
         let lst_temp:DTO_documento[] = secretaria_select == "TODOS" ? lst_documentos : lst_documentos.filter((d)=>d.reparticion?.actividad == secretaria_select) 
         
 
@@ -46,6 +45,7 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
             //POR NOMBRE DE DOCUMENTO
             if (palabra?.length > 0) {
                 matchesSearch = doc.nombre_documento.toUpperCase().includes(palabra.toUpperCase())
+                ||  doc.tipo_documento.toUpperCase().includes(palabra.toUpperCase())
             }
             //POR ESTADO
             if (estado_documento != "TODOS") {
@@ -53,7 +53,7 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
             }
             //POR REPARTICION
             if (reparticion != "TODOS") {
-                console.log("entre", doc.reparticion?.nombre.toUpperCase() , reparticion.toUpperCase())
+                // console.log("entre", doc.reparticion?.nombre.toUpperCase() , reparticion.toUpperCase())
                 matchesReparticiones = doc.reparticion?.nombre.toUpperCase() == reparticion.toUpperCase()
             }
             return matchesSearch && matchesEstado_Documento && matchesReparticiones
@@ -85,7 +85,7 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
                             >
                                 <MenuItem value={"TODOS"}>TODOS</MenuItem>
                                 {
-                                    secretarias?.map((secre,index)=><MenuItem key={secre.id_reparticion} value={secre.actividad}>{`${secre.actividad}`}</MenuItem>)
+                                    secretarias?.map((secre,index)=><MenuItem key={secre.id_reparticion} value={secre.actividad}>{`${secre.nombre}`}</MenuItem>)
                                 }
 
                             </Select>
@@ -105,7 +105,7 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
                             >
                                 <MenuItem value={"TODOS"}>TODOS</MenuItem>
                                 {
-                                    reparticiones.filter((r)=>r.actividad == secretaria_select).map((repar,index)=><MenuItem value={repar.nombre}>{`${repar.nombre}`}</MenuItem>)
+                                    reparticiones.filter((r)=>r.actividad == secretaria_select).map((repar,index)=><MenuItem key={repar.id_reparticion} value={repar.nombre}>{`${repar.nombre}`}</MenuItem>)
                                 }
 
                             </Select>
@@ -133,7 +133,7 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
                             >
                                 <MenuItem value={"TODOS"}>TODOS</MenuItem>
                                 {/* <MenuItem value={"HABILITADO"}>HABILITADO</MenuItem> */}
-                                <MenuItem value={"ELIMINADO"}>ELIMINADO</MenuItem>
+                                {/* <MenuItem value={"ELIMINADO"}>ELIMINADO</MenuItem> */}
                                 <MenuItem value={"VIGENTE"}>VIGENTE</MenuItem>
                                 <MenuItem value={"NO_VIGENTE"}>NO VIGENTE</MenuItem>
                                 <MenuItem value={"ANULADO"}>ANULADO</MenuItem>

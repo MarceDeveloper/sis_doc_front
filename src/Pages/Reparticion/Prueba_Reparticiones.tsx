@@ -161,7 +161,8 @@ import { use_reparticiones } from '../../hooks/hooks_api/reparticion/use_reparti
 
 
 export const Prueba_Reparticiones: React.FC = () => {
-  const {reparticiones,loading} = use_reparticiones()
+  const {reparticiones,loading,secretarias_reparticiones} = use_reparticiones()
+
 
 
  
@@ -183,14 +184,26 @@ export const Prueba_Reparticiones: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {validate_map(reparticiones).map((rep) => (
+          {
+            secretarias_reparticiones?.map((secre)=>(
+              secre.reparticiones.map((rep)=>(
+                <TableRow key={rep?.id_reparticion}>
+                  <TableCell className='customTableRowBody'>{secre.secretaria.nombre}</TableCell>
+                  <TableCell className='customTableRowBody'>{rep?.nivel}</TableCell>
+                  <TableCell className='customTableRowBody'>{rep?.nombre}</TableCell>
+                
+                </TableRow>
+              ))
+            ))
+          }
+          {/* {validate_map(reparticiones).map((rep) => (
             <TableRow key={rep?.id_reparticion}>
               <TableCell className='customTableRowBody'>{rep?.actividad}</TableCell>
               <TableCell className='customTableRowBody'>{rep?.nivel}</TableCell>
               <TableCell className='customTableRowBody'>{rep?.nombre}</TableCell>
              
             </TableRow>
-          ))}
+          ))} */}
         </TableBody>
       </Table>
     </TableContainer>

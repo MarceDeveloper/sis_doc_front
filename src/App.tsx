@@ -17,6 +17,33 @@ import { Colores } from './config/config_style';
 
 
 const theme = createTheme({
+  typography:{
+    subtitle1:{
+      fontSize:18,
+    },
+    subtitle2:{
+      fontSize:18,
+      fontFamily: [
+        'Quicksand',
+        // 'cursive',
+      ].join(','),
+    },
+    body1:{
+      fontSize:16,
+      fontFamily: [
+        // 'Chilanka',
+        "Quicksand"
+        // 'cursive',
+      ].join(','),
+    },
+    body2:{
+      fontFamily: [
+        'Quicksand',
+        // 'cursive',
+      ].join(','),
+    }
+    
+  },
   palette: {
     primary: {
       main: Colores.color1, // Cambia el color principal
@@ -33,7 +60,7 @@ function App() {
   useEffect(() => {
     const data_sesion = get_Store_Sesion()
     if (data_sesion) {
-      console.log("en memoria",data_sesion)
+      // console.log("en memoria",data_sesion)
       login(data_sesion.token,data_sesion.usuario)
     }
   }, [])

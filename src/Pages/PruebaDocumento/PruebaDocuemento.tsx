@@ -1,7 +1,7 @@
 
 
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   TextField,
   Select,
@@ -38,18 +38,35 @@ interface Iprops{
 
 export const PruebaDocuemento = ({type_route}:Iprops) => {
   const {usuario} = useStore_sesion()
-  console.log(usuario)
+  // console.log(usuario)
   const [lst_docs_filtrados, setlst_docs_filtrados] = useState<DTO_documento[]>([])
   const [accion_form, setaccion_form] = useState<"crear" | "actualizar" | "nueva_version">("crear")
   const [palabra_search, setpalabra_search] = useState("")
   const [OpenModal, setOpenModal] = useState(false)
   const [doc_selec_for_update, setdoc_selec_for_update] = useState<DTO_documento | null>(null)
-  const {documentos,crear_documento,crear_version_documento,update_documento,getAll_documentos,delete_documento,anular_documento,loading} = use_documentos()
+  const {documentos,crear_documento,crear_version_documento,update_documento,getAll_documentos,delete_documento,anular_documento,loading, setDocmentos,get_documentos_permitidos} = use_documentos()
 
   const [moda_display, setmoda_display] = useState<"block"| "none">("block")
 
   const MySwal = withReactContent(Swal)
 
+
+
+  useEffect(() => {
+    getDocs()
+  }, [usuario])
+
+  const getDocs = async ()=>{
+    let lst :DTO_documento[]= []
+    if (usuario) {
+      lst = await getAll_documentos()
+    }else{
+
+      lst = await get_documentos_permitidos()
+    }
+    setDocmentos(lst)
+  }
+  
 
   const handleClose = ()=>{
     setOpenModal(false)
@@ -92,7 +109,7 @@ export const PruebaDocuemento = ({type_route}:Iprops) => {
   const DescargarDocumento = async (file_name:string)=>{
     try {
       if (file_name?.length > 0) {
-        const response = await axios_.post('/files', {file_name:file_name},{ responseType: 'blob' });
+        const response = await axios_.post('/api/files', {file_name:file_name},{ responseType: 'blob' });
         // Guardar la respuesta como un archivo
         saveAs(response.data, file_name);
       }
@@ -117,7 +134,6 @@ export const PruebaDocuemento = ({type_route}:Iprops) => {
     }).then((result) => {
       setmoda_display("block")
 
-      console.log({result:result.value})
       Confirmado_Submit(data,result.value)
       // else {
       //   Swal.fire('Contraseña incorrecta', '', 'error');
@@ -129,7 +145,6 @@ export const PruebaDocuemento = ({type_route}:Iprops) => {
   const Confirmado_Submit = async (data:any,contrasena:string)=>{
     data.usuario = usuario?.usuario
     data.contrasena = contrasena
-    console.log(data)
 
     try {
         if (!doc_selec_for_update) {
@@ -213,7 +228,7 @@ export const PruebaDocuemento = ({type_route}:Iprops) => {
   return (
     <Box>
       <Navbar/>
-      { type_route == "private" &&
+      { type_route == "private" && usuario?.reparticion.id_unidad == 30565 && 
         <Fab color='primary' aria-label="Add" onClick={()=>{}} style={{ position: 'fixed', bottom: 16, right: 16 }}>
           <AiOutlinePlus  size={50} onClick={()=>{
             setdoc_selec_for_update(null)
@@ -222,9 +237,8 @@ export const PruebaDocuemento = ({type_route}:Iprops) => {
           }}/>
         </Fab>
       }
-
       {/* <Typography>Aqui ira el filter</Typography> */}
-      <Filter_Documentos lst_documentos={documentos} onFilter={(lst_documentos_filtrados)=>{setlst_docs_filtrados(lst_documentos_filtrados)}}/>
+      <Filter_Documentos lst_documentos={documentos || []} onFilter={(lst_documentos_filtrados)=>{setlst_docs_filtrados(lst_documentos_filtrados)}}/>
       <Modal open={OpenModal} onClose={handleClose} style={{zIndex:1000,display:moda_display}}>
         <div className="modal-container" style={{width:"90%", maxHeight:"90vh", overflow:"auto"}}>
           <Form_Documento accion_form={accion_form} onSubmit={onSubmit} documento={doc_selec_for_update}/>
@@ -243,6 +257,7 @@ export const PruebaDocuemento = ({type_route}:Iprops) => {
         }} 
         anular_documento = {anular_documento}
         delete_documento={delete_documento} documentos={lst_docs_filtrados}
+
       />
     </Box>
   );

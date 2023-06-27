@@ -3,20 +3,25 @@ import { axios_ } from '../../../axios/_axios'
 import { swal } from '../../../utils/alert_swal/swal'
 import { DTO_documento } from '../../../Model/DTO/DTO_Documento';
 
+
+
 export const use_documentos = () => {
   const [documentos, setDocmentos] = useState<DTO_documento[]>([]);
+  const [documentos_permitidos, setdocumentos_permitidos] = useState<DTO_documento[]>([]);
+  const [documentos_permitidos_by_secre, setdocumentos_documentos_permitidos_by_secre] = useState<DTO_documento[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchDocumentos();
-  }, []);
+  // useEffect(() => {
+  //   fetchDocumentos();
+  // }, []);
 
   const fetchDocumentos = async () => {
     try {
       setLoading(true);
-      const response = await axios_.get('/api/documentos'); // Reemplaza '/api/reparticiones' con la ruta correcta de tu API
-      setDocmentos(response?.data?.data);
+      const response = await axios_.get('/api/documentos'); 
+      setDocmentos(response.data?.data)
       setLoading(false);
     } catch (error) {
       setError('Error al obtener los documentos');
@@ -25,8 +30,19 @@ export const use_documentos = () => {
   };
 
   const getAll_documentos = async ()=>{
-    const res = await axios_.get("/api/documentos")
-    return res.data as []
+    const response = await axios_.get('/api/documentos'); 
+    // setDocmentos(response.data.data)
+    return response.data.data
+  }
+  const get_documentos_permitidos = async ()=>{
+    const response = await axios_.get('/api/documentos/permitidos'); 
+    // setdocumentos_permitidos(response.data.data)
+    return response.data.data
+  }
+  const get_documentos_by_secre = async (id:number)=>{
+    const response = await axios_.get(`/api/documentos/${id}`); 
+    setdocumentos_documentos_permitidos_by_secre(response.data)
+    return response.data
   }
   const crear_documento = async (data:any)=>{
     const formData = new FormData();
@@ -126,8 +142,8 @@ export const use_documentos = () => {
     swal.fire({title:"OK" ,text:"documento eliminado con exito",icon:"success",timer:2000})
     return res
   }
-  const anular_documento = async (id_documento:number,usuario:string,contrasena:string)=>{
-    const res  = await axios_.post(`/api/documentos/anular/${id_documento}`,{usuario,contrasena})
+  const anular_documento = async (id_documento:number,usuario:string,contrasena:string,anulado_con:string)=>{
+    const res  = await axios_.post(`/api/documentos/anular/${id_documento}`,{usuario,contrasena,anulado_con})
     fetchDocumentos()
     // swal.fire({title:"OK" ,text:"documento anulado con exito",icon:"success",timer:2000})
     return res
@@ -136,10 +152,18 @@ export const use_documentos = () => {
     documentos,
     loading,
     getAll_documentos,
+    get_documentos_permitidos,
     crear_documento,
     crear_version_documento,
     update_documento,
     delete_documento,
-    anular_documento
+    anular_documento,
+    setDocmentos
   }
 }
+
+// //EXPORT TYPE
+// const use_docu = use_documentos(); // Valor de retorno del custom hook
+
+// export type TYPE_use_documentos = typeof use_docu;
+

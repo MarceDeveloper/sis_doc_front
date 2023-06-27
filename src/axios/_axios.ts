@@ -25,8 +25,8 @@
 //     console.log("entra por bien")
 //     return res
 // },(err:AxiosError)=>{
-//     console.log("entro error")
-//     console.log(err.response?.status)
+//     ("entro error")
+//     (err.response?.status)
 //     swal.fire({icon:"error",title:"error",titleText:"ha ocurrido un error"})
 //     switch (err.response?.status) {
 //         case 401:
@@ -39,7 +39,7 @@
 //             swal.fire({icon:"error",title:"error"})
 //             break
 //         default:
-//             console.log("defauld")
+//             ("defauld")
 //             break;
 //     }
 //     return Promise.reject(err)
@@ -94,11 +94,11 @@ export const axios_ = axios.create({
 axios_.interceptors.response.use((res)=>{
     
     verify_refres_token(res)
-    console.log("entra por bien")
+    // console.log("entra por bien")
     return res
 },(err:AxiosError)=>{
-    console.log("entro error")
-    console.log(err.response?.status)
+    // console.log("entro error")
+    // console.log(err.response?.status)
     // swal.fire({icon:"error",title:"error",titleText:"ha ocurrido un error"})
     switch (err.response?.status) {
         case 401:
