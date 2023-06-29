@@ -85,7 +85,8 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
                             >
                                 <MenuItem value={"TODOS"}>TODOS</MenuItem>
                                 {
-                                    secretarias?.map((secre,index)=><MenuItem key={secre.id_reparticion} value={secre.actividad}>{`${secre.nombre}`}</MenuItem>)
+                                    secretarias?.map((secre,index)=><MenuItem key={secre.id_reparticion} value={secre.id_unidad}>{`${secre.nombre}`}</MenuItem>)
+                                    // secretarias?.map((secre,index)=><MenuItem key={secre.id_reparticion} value={secre.actividad}>{`${secre.nombre}`}</MenuItem>)
                                 }
 
                             </Select>
@@ -105,7 +106,7 @@ export const Filter_Documentos = ({lst_documentos,onFilter}:Iprops) => {
                             >
                                 <MenuItem value={"TODOS"}>TODOS</MenuItem>
                                 {
-                                    reparticiones.filter((r)=>r.actividad == secretaria_select).map((repar,index)=><MenuItem key={repar.id_reparticion} value={repar.nombre}>{`${repar.nombre}`}</MenuItem>)
+                                    reparticiones.filter((r)=>r.id_unidad_padre == Number(secretaria_select)).map((repar,index)=><MenuItem key={repar.id_reparticion} value={repar.nombre}>{`${repar.nombre}`}</MenuItem>)
                                 }
 
                             </Select>
