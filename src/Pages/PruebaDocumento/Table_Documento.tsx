@@ -11,6 +11,8 @@ import {GrUpdate} from 'react-icons/gr'
 import { useStore_sesion } from '../../store/store_sesion';
 import { error_message_api } from '../../utils/message_error_api';
 import withReactContent from 'sweetalert2-react-content';
+import { useState } from 'react';
+import { lst_ids_adm } from '../../utils/lst_ids_adm';
 
 
 const MySwal = withReactContent(Swal)
@@ -48,6 +50,7 @@ interface Iprops {
 }
 export const Table_Documento = ({ documentos,delete_documento,anular_documento,setdoc_selec_for_update ,DescargarDocumento,setaccion_form, type_route}: Iprops) => {
     const {usuario} = useStore_sesion()
+    const [is_touch_row, set_is_touch_row] = useState(0)
 
     const confirmarEliminacionDocumento = (id:number) => {
             Swal.fire({
@@ -169,6 +172,8 @@ export const Table_Documento = ({ documentos,delete_documento,anular_documento,s
                     Array.isArray(documentos) &&
                     documentos.map((doc) => (
                         <TableRow key={doc.id_documento}
+                            onClick={()=>{set_is_touch_row(doc.id_documento)}}
+                            style={{backgroundColor:is_touch_row == doc.id_documento ? "#0aa38c55":"initial"}}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             {/* <TableCell component="th" scope="row">{doc.nombre_documento}</TableCell> */}
@@ -189,13 +194,14 @@ export const Table_Documento = ({ documentos,delete_documento,anular_documento,s
                             <TableCell className='customTableRowBody'>{doc.observaciones}</TableCell>
                             <TableCell className='customTableRowBody'>{doc.formato_fisico ? "si" : "no"}</TableCell>
                             <TableCell className='customTableRowBody'>
+                                <Tooltip title="Descargar PDF" placement='top-start'>
+                                    <Button size='small' sx={{mr:1}} onClick={() => {DescargarDocumento(doc.url_file_pdf)}} variant='outlined' color='error'><BsFiletypePdf/></Button>
+                                </Tooltip>
                                 {
-                                    (usuario?.reparticion.id_unidad == 30565  || usuario?.reparticion.id_unidad == 30563) 
+                                    (usuario && lst_ids_adm.includes(usuario.id_usuario ) ) 
                                     &&
                                     <>
-                                    <Tooltip title="Descargar PDF" placement='top-start'>
-                                        <Button size='small' sx={{mr:1}} onClick={() => {DescargarDocumento(doc.url_file_pdf)}} variant='outlined' color='error'><BsFiletypePdf/></Button>
-                                    </Tooltip>
+                                    
                                     {/* <Button size='small' sx={{mr:1}} onClick={() => {DescargarDocumento(doc.url_file_pdf)}} variant='outlined' color='error'><BsFiletypePdf/></Button> */}
                                     {
                                         usuario?.reparticion.id_unidad == 30565 && //es de oym
@@ -237,7 +243,7 @@ export const Table_Documento = ({ documentos,delete_documento,anular_documento,s
                                         }
                                         {
                                             doc.estado_documento == "VIGENTE" && type_route == "private" &&
-                                            <Tooltip title="Descargar Word" placement='top-start'>
+                                            <Tooltip title="Editar" placement='top-start'>
                                                 <Button size='small' sx={{ml:1}}  variant='outlined' color='info'
                                                     onClick={() => {
                                                         setdoc_selec_for_update(doc)

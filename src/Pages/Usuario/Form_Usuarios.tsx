@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { TextField, Button, Grid, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Form_Usuario } from '../../hooks/prueba/usuario/use_usuarios';
 import { Secre_with_reparticiones, use_reparticiones } from '../../hooks/hooks_api/reparticion/use_reparticiones_prisma';
+import { service_secretaria } from '../../api/service_secretaria';
 
 interface UserFormProps {
   onSubmit: (data: Form_Usuario) => void;
@@ -16,43 +17,66 @@ interface UserFormProps {
 // }
 
 export const Form_Usuarios: React.FC<UserFormProps> = ({ onSubmit, defaultValues }) => {
-  const {secretarias,reparticiones,secretarias_reparticiones, loading} = use_reparticiones()
+  const { secretarias, reparticiones, secretarias_reparticiones, loading } = use_reparticiones()
   const [select_secretaria_rep, setselect_secretaria_rep] = useState<Secre_with_reparticiones>()
-  const { register, handleSubmit,watch, resetField,reset,setValue, formState: { errors } } = useForm<Form_Usuario>({
+  const [secretaria_select, setSecretaria_select] = useState(0)
+  const [lst_secretarias_with_reparticiones, setlst_secretarias_with_reparticiones] = useState<any[]>([])
+
+
+
+  const { register, handleSubmit, watch, resetField, reset, setValue, formState: { errors } } = useForm<Form_Usuario>({
     defaultValues: defaultValues,
   });
   const handleFormSubmit = (data: Form_Usuario) => {
     onSubmit(data);
     reset();
   };
+
+  useEffect(() => {
+    Get_Lst_Secretarias_reparticiones()
+  }, [])
+
+  const Get_Lst_Secretarias_reparticiones = async () => {
+    const lst = await service_secretaria.getAllI_secretarias_with_reparticiones()
   
-  console.log({secre:secretarias?.length,rep:reparticiones.length,total:secretarias?.length || 0 +reparticiones.length})
+    setlst_secretarias_with_reparticiones(lst)
+  }
   
+
+  const RenderReparticiones = ()=>{
+    const secre = lst_secretarias_with_reparticiones.find((x) => x.secretaria.id_reparticion == secretaria_select)
+    console.log({secre})
+    if (secre) {
+      console.log({reparticiones:secre.lst_reparticiones})
+      return secre.lst_reparticiones.map((r:any)=>(
+        <MenuItem key={r.reparticion.id_reparticion} value={r.reparticion.id_reparticion}> {r.reparticion.nombre}</MenuItem>
+      ))
+      
+    }
+  }
+
+
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
+        
           <FormControl fullWidth variant="outlined" size="small" required>
             <InputLabel id="secretaria-label">Secretaria</InputLabel>
             <Select
-              required = {true}
               labelId="secretaria-label"
               label="Secretaria"
-              onChange={(e)=>{
-                resetField("id_reparticion")
-                const sec_r = secretarias_reparticiones?.find((sec_rep)=>sec_rep.secretaria.id_reparticion == Number(e.target.value))
-          
-                if (sec_r) {
-                  setselect_secretaria_rep(sec_r)
-                }
+              onChange={(e) => {
+                setSecretaria_select(Number(e.target.value))
               }}
-              value={select_secretaria_rep}
-                // renderValue={(selected :any) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
+              value={secretaria_select}
             >
               {
-                  secretarias?.map((sec,index)=><MenuItem key={sec.id_reparticion} value={sec.id_reparticion}>{sec.nombre}</MenuItem>)
+                lst_secretarias_with_reparticiones.map((item) => (
+                  <MenuItem key={item.secretaria.id_reparticion} value={item.secretaria.id_reparticion}>{item.secretaria.nombre}</MenuItem>
+                ))
               }
-              {/* Agrega más opciones según tus necesidades */}
+
             </Select>
           </FormControl>
         </Grid>
@@ -63,13 +87,18 @@ export const Form_Usuarios: React.FC<UserFormProps> = ({ onSubmit, defaultValues
               {...register("id_reparticion")}
               labelId="id_reparticion-label"
               label="Reparticion"
-              // value={watch("id_reparticion")}
-              //   renderValue={(selected) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
+            
             >
-              {
-                  select_secretaria_rep?.reparticiones.map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.id_reparticion}>{repart.nombre}</MenuItem>)
-              }
-              {/* Agrega más opciones según tus necesidades */}
+               {
+                  lst_secretarias_with_reparticiones.filter((x) => x.secretaria.id_reparticion == secretaria_select).map((item) => (
+                    <MenuItem key={item.secretaria.id_reparticion} value={item.secretaria.id_reparticion}>{item.secretaria.nombre}</MenuItem>
+                  ))
+                }
+
+                {
+                  RenderReparticiones()
+                }
+             
             </Select>
           </FormControl>
         </Grid>
@@ -125,7 +154,7 @@ export const Form_Usuarios: React.FC<UserFormProps> = ({ onSubmit, defaultValues
             )}
           </Grid>
         }
-      
+
       </Grid>
       <Button type="submit" variant="contained" color="primary">
         Guardar

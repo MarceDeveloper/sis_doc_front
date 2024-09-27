@@ -1,8 +1,15 @@
 import { createGlobalStyle } from "styled-components";
-import {Colores} from '../config/config_style'
+import { Colores } from '../config/config_style'
 
 
 const GlobalStyle = createGlobalStyle`
+
+  @media print {
+      .no-print {
+          display: none;
+      }
+  }
+
 
   * {
     margin: 0;

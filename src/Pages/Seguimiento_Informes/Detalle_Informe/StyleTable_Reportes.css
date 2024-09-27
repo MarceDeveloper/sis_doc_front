@@ -1,0 +1,36 @@
+/* Estilos para la tabla */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+
+.table th {
+  background-color: #f2f2f2;
+}
+
+
+.responsable-firma {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.linea-firma {
+    border-top: 1px solid black; /* Cambia el estilo de la línea según tus preferencias */
+
+    width: 120px; /* Asegura que la línea ocupe todo el ancho de la celda */
+  }

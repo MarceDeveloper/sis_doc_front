@@ -1,5 +1,5 @@
-import react , {useState,useEffect} from 'react'
-import { useForm,Controller } from "react-hook-form";
+import react, { useState, useEffect } from 'react'
+import { useForm, Controller } from "react-hook-form";
 import {
   Container,
   Grid,
@@ -24,44 +24,64 @@ import { use_reparticiones } from "../../hooks/hooks_api/reparticion/use_reparti
 import { use_documentos } from "../../hooks/hooks_api/documento/use_documento";
 import { DTO_documento } from "../../Model/DTO/DTO_Documento";
 import moment_time from 'moment-timezone'
+import { service_secretaria } from '../../api/service_secretaria';
 
 
-interface Iprops{
+interface Iprops {
   onSubmit: (data: any) => Promise<void>
-  documento:DTO_documento | null
-  accion_form:"crear" | "actualizar" | "nueva_version"
+  documento: DTO_documento | null
+  accion_form: "crear" | "actualizar" | "nueva_version"
 }
 
-export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
-  const [secretaria_select, setSecretaria_select] = useState("")
-  const {crear_documento} = use_documentos()
-  const { reparticiones,secretarias } = use_reparticiones();
+export const Form_Documento = ({ onSubmit, documento, accion_form }: Iprops) => {
+  const [secretaria_select, setSecretaria_select] = useState(0)
+  const { crear_documento } = use_documentos()
+  const { reparticiones, secretarias } = use_reparticiones();
+
+  const [lst_secretarias_with_reparticiones, setlst_secretarias_with_reparticiones] = useState<any[]>([])
 
 
-  const { register, handleSubmit, watch ,getValues,control,formState:{errors}} = useForm<any>({
-    defaultValues:{
+  const { register, handleSubmit, watch, getValues, control, formState: { errors } } = useForm<any>({
+    defaultValues: {
       ...documento
     }
   });
-  
+
   useEffect(() => {
-    if (documento) {
-      const sec = reparticiones.find((r)=>r.id_reparticion == documento.id_reparticion)
-      // console.log({sec:sec?.actividad})
-      if (sec) {
-        setSecretaria_select(sec?.actividad)
-      }
+    Listar_Secretarias()
+
+  }, [])
+
+  const Listar_Secretarias = async () => {
+    try {
+      const lst = await service_secretaria.getAllI_secretarias_with_reparticiones()
+      console.log({ lst_for_form: lst })
+      setlst_secretarias_with_reparticiones(lst)
+    } catch (error) {
+
     }
-  }, [reparticiones])
-  
+
+  }
+
+
+  // useEffect(() => {
+  //   if (documento) {
+  //     const sec = reparticiones.find((r)=>r.id_reparticion == documento.id_reparticion)
+  //     // console.log({sec:sec?.actividad})
+  //     if (sec) {
+  //       setSecretaria_select(sec?.actividad)
+  //     }
+  //   }
+  // }, [reparticiones])
+
 
 
   const fileWord = watch("file_word");
   const file_pdf = watch("file_pdf");
 
-  
-  const Render_Accion_Form = ():string =>{
-    let accion=""
+
+  const Render_Accion_Form = (): string => {
+    let accion = ""
     switch (accion_form) {
       case "crear":
         accion = "Crear"
@@ -70,12 +90,32 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
         accion = "Actualizar"
         break;
       case "nueva_version":
-        accion = "Nueva Versión" 
+        accion = "Nueva Versión"
         break;
       default:
         break;
     }
     return accion
+  }
+
+  const Render_Secretaria_Como_Reparticion = () => {
+    const secre = secretarias?.find((r) => String(r.id_unidad) == String(secretaria_select))
+
+    if (secre) {
+      return <MenuItem key={secre.id_reparticion} value={secre.id_reparticion}>{secre.nombre}</MenuItem>
+    }
+  }
+
+  const RenderReparticiones = ()=>{
+    const secre = lst_secretarias_with_reparticiones.find((x) => x.secretaria.id_reparticion == secretaria_select)
+    console.log({secre})
+    if (secre) {
+      console.log({reparticiones:secre.lst_reparticiones})
+      return secre.lst_reparticiones.map((r:any)=>(
+        <MenuItem key={r.reparticion.id_reparticion} value={r.reparticion.id_reparticion}> {r.reparticion.nombre}</MenuItem>
+      ))
+      
+    }
   }
 
   return (
@@ -85,7 +125,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
-              disabled={accion_form == "actualizar" ? true: false}
+              disabled={accion_form == "actualizar" ? true : false}
               {...register("nombre_documento")}
               size="small"
               label="Nombre del documento"
@@ -99,14 +139,21 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
               <Select
                 labelId="secretaria-label"
                 label="Secretaria"
-                onChange={(e)=>{setSecretaria_select(String(e.target.value))}}
+                onChange={(e) => {
+                  setSecretaria_select(Number(e.target.value))
+                }}
                 value={secretaria_select}
-                  // renderValue={(selected :any) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
+              // renderValue={(selected :any) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
               >
                 {
-                    secretarias?.map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.actividad}>{repart.nombre}</MenuItem>)
+                  lst_secretarias_with_reparticiones.map((item) => (
+                    <MenuItem key={item.secretaria.id_reparticion} value={item.secretaria.id_reparticion}>{item.secretaria.nombre}</MenuItem>
+                  ))
                 }
-                {/* Agrega más opciones según tus necesidades */}
+
+                {/* {
+                    secretarias?.map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.id_unidad}>{repart.nombre}</MenuItem>)
+                } */}
               </Select>
             </FormControl>
           </Grid>
@@ -118,20 +165,36 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
                 labelId="id_reparticion-label"
                 label="Reparticion"
                 value={watch("id_reparticion")}
-                //   renderValue={(selected) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
+              //   renderValue={(selected) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
               >
                 {
-                    reparticiones?.filter((r)=> r.actividad == secretaria_select).map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.id_reparticion}>{repart.nombre}</MenuItem>)
+                  lst_secretarias_with_reparticiones.filter((x) => x.secretaria.id_reparticion == secretaria_select).map((item) => (
+                    <MenuItem key={item.secretaria.id_reparticion} value={item.secretaria.id_reparticion}>{item.secretaria.nombre}</MenuItem>
+                  ))
                 }
-                {/* Agrega más opciones según tus necesidades */}
+
+                {
+                  RenderReparticiones()
+                }
+                {/* {
+                  lst_secretarias_with_reparticiones.map((item)=>(
+                    <MenuItem key={item.secretar.id_reparticion} value={item.secretaria.id_reparticion}>{item.secretaria.nombre}</MenuItem>
+                  ))
+                } */}
+                {/* {
+                  Render_Secretaria_Como_Reparticion()
+                }
+                {
+                    reparticiones?.filter((r)=> r.id_unidad_padre == Number(secretaria_select)).map((repart,index)=><MenuItem key={repart.id_reparticion} value={repart.id_reparticion}>{repart.nombre}</MenuItem>)
+                } */}
               </Select>
             </FormControl>
           </Grid>
-          
+
           <Grid item xs={12} sm={6}>
             <Controller control={control}
               defaultValue={""}
-              name="fecha_vigencia" 
+              name="fecha_vigencia"
               rules={{ required: "la fecha es obligatorio", minLength: 3 }}
               render={(ren) => (
                 <TextField
@@ -149,7 +212,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
                 />
                 // <input  type='date' value={String(moment_time.utc(ren.field.value).format('YYYY-MM-DD'))}  onChange={(val) => ren.field.onChange(val)}/>
               )}
-              
+
             />
             {/* <TextField
               {...register("fecha_vigencia")}
@@ -174,30 +237,30 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
                 labelId="id_reparticion-label"
                 label="Tipo Documento"
                 value={watch("tipo_documento")}
-                //   renderValue={(selected) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
+              //   renderValue={(selected) => <Typography>{selected || 'Seleccione una opción'}</Typography>}
               >
-                <MenuItem  value={"estatuto"}>estatuto</MenuItem>
-                <MenuItem  value={"codigo"}>codigo</MenuItem>
-                <MenuItem  value={"reglamento"}>reglamento</MenuItem>
-                <MenuItem  value={"manual"}>manual</MenuItem>
-                <MenuItem  value={"guia"}>guia</MenuItem>
-                <MenuItem  value={"instructivo"}>instructivo</MenuItem>
-                <MenuItem  value={"formato"}>formato</MenuItem>
-                <MenuItem  value={"registro"}>registro</MenuItem>
+                <MenuItem value={"estatuto"}>estatuto</MenuItem>
+                <MenuItem value={"codigo"}>codigo</MenuItem>
+                <MenuItem value={"reglamento"}>reglamento</MenuItem>
+                <MenuItem value={"manual"}>manual</MenuItem>
+                <MenuItem value={"guia"}>guia</MenuItem>
+                <MenuItem value={"instructivo"}>instructivo</MenuItem>
+                <MenuItem value={"formato"}>formato</MenuItem>
+                <MenuItem value={"registro"}>registro</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               {...register("codigo_del_documento")}
-              disabled={accion_form == "nueva_version" || accion_form == "actualizar" ? true: false}
+              disabled={accion_form == "nueva_version" || accion_form == "actualizar" ? true : false}
               size="small"
               label="Código del documento"
               fullWidth
               required
             />
           </Grid>
-          
+
           <Grid item xs={12} sm={6}>
             <label htmlFor="file_word">
               <input
@@ -212,7 +275,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
               <IconButton
                 color="primary"
                 component="span"
-                // sx={{backgroundColor:"#0080d0", color:"white"}}
+              // sx={{backgroundColor:"#0080d0", color:"white"}}
               >
                 <AiOutlineFileWord />
               </IconButton>
@@ -234,7 +297,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
               <IconButton
                 color="primary"
                 component="span"
-                // sx={{backgroundColor:"#d00000", color:"white"}}
+              // sx={{backgroundColor:"#d00000", color:"white"}}
               >
                 <BsFiletypePdf />
               </IconButton>
@@ -248,7 +311,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
               label="Permitido"
             />
           </Grid>
-          { accion_form == "crear" &&
+          {accion_form == "crear" &&
             <Grid item xs={12} sm={6}>
               <FormControlLabel
                 control={<Checkbox checked={watch("inicia_en_0")} size="small" {...register("inicia_en_0")} />}
@@ -339,7 +402,7 @@ export const Form_Documento = ({onSubmit,documento,accion_form}:Iprops) => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              {...register("numero_de_paginas",{valueAsNumber:true})}
+              {...register("numero_de_paginas", { valueAsNumber: true })}
               type="number"
               size="small"
               label="Número de páginas"

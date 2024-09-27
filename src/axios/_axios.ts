@@ -135,10 +135,11 @@ axios_.interceptors.request.use((req)=>{
     const data_sesion = get_Store_Sesion()
     const token_storage = data_sesion?.token
     if (token_storage) {
-        req.headers.Authorization= token_storage
+        req.headers.Authorization= `Bearer ${token_storage}` 
     }
     
     return req
 })
+
 
 

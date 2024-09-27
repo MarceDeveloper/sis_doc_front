@@ -19,7 +19,7 @@ export const Login = () => {
       // console.log("en memoria",data_sesion)
       login(data_sesion.token,data_sesion.usuario)
       // console.log("ingresare esta data")
-      navi("/")
+      navi("/home")
     }
   }, [])
 
@@ -33,7 +33,7 @@ export const Login = () => {
       if (token && res.data?.usuario) {
         console.log("guardar esete usuario ",res.data.usuario)
         login(token,res.data.usuario)
-        navi("/")
+        navi("/home")
       }
     } catch (error: any) {
       const mensaje =
