@@ -38,6 +38,7 @@ import { Reporte_2 } from "../components/Informes/Formato_2";
 import { Reporte_3 } from "../components/Informes/Formato_3";
 import { Reporte_6 } from "../components/Informes/Formato_6";
 import { Reporte_7 } from "../components/Informes/Formato_7";
+import { Cambiar_Contrasena } from "../Pages/Cambiar_Contraseña/Cambiar_Contraseña_Page";
 
 // import { Home } from '../Pages/Home/Home'
 // import { PrivateRoute } from './PrivateRoute'
@@ -228,6 +229,10 @@ export const RouterApp = createBrowserRouter([
   {
     path:"/",
     element:<Login/>
+  },
+  {
+    path:"/change_my_password",
+    element:<Cambiar_Contrasena/>
   },
   {
     path:"/home",

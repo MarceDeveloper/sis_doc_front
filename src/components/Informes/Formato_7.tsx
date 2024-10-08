@@ -11,7 +11,6 @@ export const Reporte_7 = () => {
     }, [])
     
     const Oninti = async ()=>{
-        console.log("entre")
         const res = await service_reporte_seguimiento_informes.get_reporte_7()
         console.log({res})
     }

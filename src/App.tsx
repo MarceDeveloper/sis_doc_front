@@ -64,7 +64,6 @@ function App() {
   useEffect(() => {
     const data_sesion = get_Store_Sesion()
     if (data_sesion) {
-      // console.log("en memoria",data_sesion)
       login(data_sesion.token,data_sesion.usuario)
     }
   }, [])

@@ -117,79 +117,79 @@ export const Navbar: React.FC = () => {
   const lst_adm_seguimiento_informes: I_Ruta[] = [
     {
       icono: <FaUsers color={colorIcon} />,
-      label: "home_seguimiento_informes",
+      label: "Seguimiento de Informes",
       path: "/home_seguimiento_informes"
     },
-    {
-      icono: <FaBuilding color={colorIcon} />,
-      label: "informes_reportes",
-      path: "/informes_reportes"
-    },
-    {
-      icono: <FaBuilding color={colorIcon} />,
-      label: "informe_reporte_1",
-      path: "/informe_reporte_1"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "informe_reporte_2",
-      path: "/informe_reporte_2"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "informe_reporte_3",
-      path: "/informe_reporte_3"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "informe_reporte_4",
-      path: "/informe_reporte_4"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "informe_reporte_6",
-      path: "/informe_reporte_6"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "informe_reporte_7",
-      path: "/informe_reporte_7"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "seguimiento_informes",
-      path: "/seguimiento_informes"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "recomendacion_informe",
-      path: "/recomendacion_informe"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "descripcion_recomendacion",
-      path: "/descripcion_recomendacion"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "tarea_descipcion",
-      path: "/tarea_descipcion"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "responsable_tarea",
-      path: "/responsable_tarea"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "accion_tarea_responsable",
-      path: "/accion_tarea_responsable"
-    },
-    {
-      icono: <HiDocumentReport color={colorIcon} />,
-      label: "accion_tarea_mae",
-      path: "/accion_tarea_mae"
-    },
+    // {
+    //   icono: <FaBuilding color={colorIcon} />,
+    //   label: "informes_reportes",
+    //   path: "/informes_reportes"
+    // },
+    // {
+    //   icono: <FaBuilding color={colorIcon} />,
+    //   label: "informe_reporte_1",
+    //   path: "/informe_reporte_1"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "informe_reporte_2",
+    //   path: "/informe_reporte_2"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "informe_reporte_3",
+    //   path: "/informe_reporte_3"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "informe_reporte_4",
+    //   path: "/informe_reporte_4"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "informe_reporte_6",
+    //   path: "/informe_reporte_6"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "informe_reporte_7",
+    //   path: "/informe_reporte_7"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "seguimiento_informes",
+    //   path: "/seguimiento_informes"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "recomendacion_informe",
+    //   path: "/recomendacion_informe"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "descripcion_recomendacion",
+    //   path: "/descripcion_recomendacion"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "tarea_descipcion",
+    //   path: "/tarea_descipcion"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "responsable_tarea",
+    //   path: "/responsable_tarea"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "accion_tarea_responsable",
+    //   path: "/accion_tarea_responsable"
+    // },
+    // {
+    //   icono: <HiDocumentReport color={colorIcon} />,
+    //   label: "accion_tarea_mae",
+    //   path: "/accion_tarea_mae"
+    // },
 
     {
       icono: <HiDocumentReport color={colorIcon} />,
